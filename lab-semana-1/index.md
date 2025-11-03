@@ -45,3 +45,38 @@ Brayan Stiven Chaparro Cataño
 
 
 ### Actividad #3
+
+Instalación de mysql server
+
+![alt instalación mysql](img/1.png)
+
+Creacion de base de datos desde el cli de mysql
+
+![alt cli](img/2.png)
+
+Intalación y conexion Workbench
+![alt db-interfaz](img/workbench.png)
+
+
+Creación de base de datos desde interfaz grafica mysqul workbench
+![alt db-interfaz](img/3.png)
+
+
+Instalción de PostgreSQl
+
+![alt instalcion posgresql](img/4.png)
+![alt estatus](img/5.png)
+
+Creación base de datos cli de PostgreSQL
+
+![alt inicio](img/6.png)
+![alt creacion db postgresql](img/db-cli.png)
+![alt ingreso usuario](img/7.png)
+
+
+Creacion de base de datos desde PgAdmin
+
+![alt botones de creación](img/pgadmin1.png)
+![alt resultado final](img/pgadmin2.png)
+
+<!-- ![alt entidad_relacion](img/Modelo_Entidad_Relación.svg) -->
