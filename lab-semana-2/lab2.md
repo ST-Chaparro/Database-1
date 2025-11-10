@@ -18,3 +18,12 @@ Sus relaaciones son:
  * SALE_DETAIL N:1 PRODUCT: Puede dar el caso que uno o más productos esten presentes en el detalle de venta
  * BRANCH N:M PRODUCT: Hace referencia que la surcursal distribuye mucho productos y que un producto se vende en multiples sucursales
 
+### Actividad  #2
+
+![alt entidad_relacion](img/tabla.SVG)
+
+Se realizo cada una de las tablas por cada entidad con sus atributos y la relación que tiene con las demas. Como también las claves foraneas en cada tabla. La relación que tienen entre sí mediante las Claves Foráneas (FKs). Se implementaron dos Claves Primarias Compuestas para resolver la complejidad: una en la tabla DETAIL_SALE (Entidad Débil) y la otra en INVENTORY (relación N:M), lo cual asegura el correcto registro del stock disponible para sucursales.
+
+Y tambien se tuvo en cuenta de no agregar los atributos derivados los cuales se pueden calcular apartir de otro atributo.
+
+### Actividad  #3
