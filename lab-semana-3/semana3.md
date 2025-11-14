@@ -34,6 +34,7 @@ CREATE TABLE Categorias(
 ```sql
 CREATE TABLE Productos(
     productoID INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100),
     categoriaID INT NOT NULL,
     cantidad_stock INT,
     descripcion VARCHAR(500), 
@@ -81,9 +82,9 @@ CREATE TABLE Pedidos(
     fecha DATE,
     estado VARCHAR(20),
     total decimal(20, 2) NOT NULL,
-    descripcion VARCHAR(100)
+    descripcion VARCHAR(100),
     created_at DATE,
-    update_at DATE,
+    updated_at DATE,
     clienteID INT NOT NULL,
     
     
@@ -124,6 +125,8 @@ CREATE TABLE Envios(
 );
 ```
 
+Le agrege un valor por defecto al estado del envio que en este caso es `En proceso`.
+
 9. Creación de tabla `telefonos_clientes`.
 
 ```sql
@@ -160,3 +163,142 @@ CREATE TABLE direcciones_clientes(
     FOREIGN KEY (clienteID) references Clientes(clienteID)
 );
 ```
+![alt tablas ya creadas](img/result_ddl.png)
+
+Como resultado de ejecucion de cada de uno de los comandos para crear cada tabla como se aprecia en la imagen se han generado las tablas correspondientes al ejercicio.
+Este primer paso no me surgio ninguna dificultad de momento.
+
+### comandos DDL
+
+1. insertar datos a la tabla `Categorias`.
+
+```sql
+INSERT INTO Categorias (nombre, descripcion)
+VALUES
+    ('Deportes y Fitness', 'Explora lo mejor en productos y accesorios.'),
+    ('Hogar', 'Articulos para la decoración y mantenimiento del hogar.' ),
+    ('Tegnologia', 'Encuentra lo ultimo en tegnologia.' ),
+    ('Juegos y Juguetes', 'Juegos para todas las edades.' );
+
+```
+
+2. Insertar datos a la tabla `Productos`.
+
+```sql
+INSERT INTO Productos (categoriaID, nombre, cantidad_stock, descripción, garantia, precio)
+VALUES
+    (1,'Colchoneta de Yoga Pro', 23, 'Colchoneta de yoga antideslizante de 6mm de grosor.', '2026-06-30',15.59),
+    (2,'Set de 4 Tazas de Cerámica', 80, 'Set de 4 tazas de cerámica para café con acabado brillante.', NULL ,24.99 ),
+    (3, 'Audífonos Inalámbricos ANC', 23, 'Audifonos inalámbricos con cancelación de ruido activa.', '2026-12-01', 89.99 ),
+    (4, 'Bloques de Construcción Clásicos', 60, 'Bloques de construcción de 500 piezas, compatibles con otras marcas.', NULL, 35.00);
+
+```
+
+3. insertar datos a la tabla `Clientes`.
+
+```sql
+INSERT INTO Clientes (nombre, apellido, fecha_nacimiento)
+VALUES 
+    ('Laura', 'Pérez', '2000-03-20'),
+    ('Roberto', 'Sánchez', '2003-11-05'),
+    ('Sofía', 'Martínez', '2001-07-18'),
+    ('Andrés', 'Gómez', '2000-01-25');
+```
+
+4. insertar datos a la tabla `Calificaciones`.
+
+```sql
+INSERT INTO Calificaciones (valoracion, comentario, fecha, productoID, clienteID)
+VALUES 
+    (5, 'Excelente colchoneta, muy cómoda y no se resbala.', '2025-11-10', 1, 1),
+    (4, 'Buen sonido, pero la cancelación de ruido podría mejorar un poco.', '2025-11-12', 3, 2),
+    (5, 'Un juego perfecto para los niños. ¡Horas de diversión!', '2025-11-13', 4, 3),
+    (3, 'Las tazas son bonitas, pero una llegó con un pequeño defecto en el esmalte.', '2025-11-14', 2, 4);
+```
+
+
+
+5. inserta datos a la tabla `Pedidos`.
+
+```sql
+INSERT INTO Pedidos (fecha, estado, total, descripcion, created_at, updated_at, clienteID)
+VALUES 
+    ('2025-11-10', 'Entregado', 45.99, 'Pedido de ropa deportiva y un libro.', '2025-11-10', '2025-11-14', 1),-- (cliente Laura)
+    ('2025-11-12', 'Enviado', 189.98, 'Pedido de audífonos y un cargador.', '2025-11-12', '2025-11-13', 2), -- (cliente Roberto)
+    ('2025-11-13', 'Pendiente', 35.00, 'Solo bloques de construcción.', '2025-11-13', '2025-11-13', 3), -- (cliente Sofia)
+    ('2025-11-14', 'Cancelado', 24.99, 'Set de tazas para regalo.', '2025-11-14', '2025-11-14', 4); -- (cliente Andres)
+```
+
+6. insertar datos a `ProductosPedidos`.
+
+```sql
+INSERT INTO ProductosPedidos (productoID, pedidoID)
+VALUES 
+    (1, 1), -- (laura) pedido 1, producto 1(colchoneta yoga)
+    (3, 2), -- (Roberto) pedido 2, Producto 3 (Audífonos)
+    (1, 2), -- (Roberto) pedido 3, Producto 1 (colchoneta yoga)
+    (4, 3), -- (Sofia) pedido 4, Producto 4 (Bloques)
+    (2, 4); -- (Andres) pedido 5, Producto 2 (Tazas)
+```
+
+
+7. inserta datos a `Envios`.
+
+```sql
+INSERT INTO Envios (direccion, transportista, numero_seguimiento, fecha_entrega_estimada, estado_envio, pedidoID)
+VALUES 
+
+    ('Calle 123, Bogotá', 'FedEx', 'FX1234567890', '2025-11-14', 'Entregado', 1),
+    ('Avenida  742, Medellín', 'DHL', 'DHL9876543210', '2025-11-18', 'Enviado', 2), 
+    ('Carrera 5 # 32-65, Yopal', 'Correos Rápidos', 'CR000111254', '2025-11-20', DEFAULT, 3); -- El valor por defecto es el estado 'en proceso'
+    -- El ultimo ser cancelado no hay registro de envios
+```
+
+
+8. insertar datos a `telefonos_clientes`.
+
+```sql
+INSERT INTO telefonos_clientes (clienteID, telefono)
+VALUES 
+    -- (Laura Pérez)
+    (1, '+573105550001'), 
+    -- (Roberto Sánchez)
+    (2, '+573005550002'),   
+    -- (Sofía Martínez)
+    (3, '+573205550003'),
+    -- (Andrés Gómez)
+    (4, '+573155550004'), 
+    -- (Laura Pérez) este es un segundo numero de esta cliente ya que para eso se usa esta tabla que permite que un cliente tenga hasta dos o más numero de telefono, depende mucho del modelo de negocio a seguir
+    (1, '+576015551234');
+```
+    
+
+10. insertar datos a `email_clientes`.
+
+```sql
+INSERT INTO email_clientes (clienteID, email)
+VALUES 
+    (1, 'laura.perez@dominio.com'), 
+    (2, 'roberto.sanchez@ejemplo.net'),
+    (3, 'sofia.martinez@correo.com'),
+    (4, 'andres.gomez@mail.org'),
+    (2, 'roberto.trabajo@ejemplo.net');
+```
+
+10. insertar datos a `direcciones_clientes`.
+
+```sql
+INSERT INTO direcciones_clientes (clienteID, direccion)
+VALUES 
+    (1, 'Calle 123, Bogotá'),
+    (2, 'Avenida  742, Medellín'),
+    (2, 'calle 134, Medellin'),
+    (3, 'Carrera 5 # 32-65, Yopal'),
+    (4, 'Carrera 10 #50-74, Bogotá');
+```
+
+### Ejercicios
+
+1. `SELECT`
+
+![alt text](img/select_product.png)
