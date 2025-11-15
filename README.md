@@ -41,4 +41,22 @@ ALTER TABLE Productos
 ADD COLUMN nombre VARCHAR(100) NOT NULL AFTER categoriaID;
 ```
 
-El `AFTER` lo use para agregar la nueva columna despues de `categoriaID` para tener el orden que queria
+El `AFTER` lo use para agregar la nueva columna despues de `categoriaID` para tener el orden que queria.
+
+* Agregar valores a una columna o modificar un valor existente con `UPDATE`.
+
+```sql
+UPDATE Productos -- Tabla 
+SET nombre = 'Colchoneta de Yoga Pro' -- valor y campo 
+WHERE productoID = 1; -- condición
+```
+
+
+* Usando el operador `and` de `sql`.
+El `AND` operador se utiliza para filtrar registros en función de más de una condición
+
+```sql
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition1 AND condition2 AND condition3 ...;
+```

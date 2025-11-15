@@ -168,7 +168,7 @@ CREATE TABLE direcciones_clientes(
 Como resultado de ejecucion de cada de uno de los comandos para crear cada tabla como se aprecia en la imagen se han generado las tablas correspondientes al ejercicio.
 Este primer paso no me surgio ninguna dificultad de momento.
 
-### comandos DDL
+### comandos DML
 
 1. insertar datos a la tabla `Categorias`.
 
@@ -299,6 +299,90 @@ VALUES
 
 ### Ejercicios
 
-1. `SELECT`
+1. `SELECT`.
 
 ![alt text](img/select_product.png)
+
+* Agregar la columna `peso` de tipo `Decimal` a la tabla `Productos`.
+
+```sql
+ALTER TABLE Productos
+ADD COLUMN peso DECIMAL(10, 2) AFTER precio;
+```
+* Modificar el campo garantia a `DATE`.
+
+*El tipo de dato ya esta presente desde la creción de la tabla.*
+
+* Agregar registros a la columna `peso`.
+
+```sql
+UPDATE Productos
+SET peso = 1.50  
+WHERE productoID = 1;
+```
+
+2. Seleccionar `nombre` y `precio` cuyo precio sea mayor a 20 y menor a 50.
+
+```sql
+SELECT nombre, precio
+FROM Productos
+WHERE precio > 20 AND precio < 50;
+```
+![alt price](img/and_mayor_menor.png)
+
+3. Selecciona la `valoración`, `comentario` y `clienteId` de todas las calificaciones de un producto realizadas durante el año actual.
+
+```sql
+SELECT valoracion, comentario, clienteID
+FROM Calificaciones
+WHERE YEAR(2025) 
+
+```
+
+![alt calificaciones](img/year2025.png)
+
+4. Selecciona todos los ~`IDs de pedidos` en los cuales se encuentre un producto determinado
+
+```sql
+SELECT pedidoID
+FROM ProductosPedidos
+WHERE productoID = 1;
+```
+
+![alt producto pedidos con el id 1](img/producto_pedido.png)
+
+5. Selecciona toda la información de los clientes que sean mayores de edad a la fecha actual.
+
+```sql
+SELECT *
+FROM Clientes
+WHERE CURDATE() >= DATE_ADD(fecha_nacimiento, INTERVAL 18 YEAR);
+
+```
+
+![alt todos los clientes mayores de edad](img/mayor_edad_client.png)
+
+6. Selecciona todos los `teléfonos` de un cliente determinado.
+
+```sql
+SELECT *
+FROM telefonos_clientes
+WHERE clienteID = 1;
+
+```
+
+![alt numero cliente 1](img/numeros_client.png)
+
+7. Selecciona toda la información de los `envíos` que ya hayan sido `entregados`.
+
+```sql
+SELECT *
+FROM Envios
+WHERE estado_envio = 'Entregado';
+```
+
+![alt numero cliente 1](img/estado_entregado.png)
+
+### Conclusión de la actividad #1
+
+El aprender a usar los comandos correctos tanto para creación de tablas usando comando DDL y para la inserción de datos usando comandos DML y por ultimo realizar consultas usando comandos DQL por lo tanto se aprendio la sintaxis de cada uno para realizar los ejercicios propuestos. Ademas de esto se opto por crear una documentación en el readme del repo para tenerlo como notas de lo que realizado.
