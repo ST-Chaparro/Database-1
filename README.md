@@ -33,6 +33,16 @@ Hay otra forma que es usando `CHANGE` este es más potente ya que este permite r
 ALTER TABLE nameTable
 CHANGE COLUMN nameOld nameNew Type_Date_New;
 ```
+* Usar `MODIFY`
+
+```sql
+ALTER TABLE Medicos
+MODIFY COLUMN nombre VARCHAR(10) NOT NULL;
+```
+
+
+
+
 
 * Agregar una columna a la tabla `ADD COLUMM` seguido del nombre y tipo de dato.
 

@@ -386,3 +386,220 @@ WHERE estado_envio = 'Entregado';
 ### Conclusión de la actividad #1
 
 El aprender a usar los comandos correctos tanto para creación de tablas usando comando DDL y para la inserción de datos usando comandos DML y por ultimo realizar consultas usando comandos DQL por lo tanto se aprendio la sintaxis de cada uno para realizar los ejercicios propuestos. Ademas de esto se opto por crear una documentación en el readme del repo para tenerlo como notas de lo que realizado.
+
+
+### Actividad #2
+
+
+* Diagrama ER de la base de datos `Hospital`
+
+![alt ER](img/ER-Hospital.png)
+
+Creación de la tablas
+1. `Pacientes`
+
+```sql
+CREATE TABLE Pacientes (
+   pacienteID INT AUTO_INCREMENT PRIMARY KEY,
+   nombre VARCHAR(100) NOT NULL,
+   apellido VARCHAR(100) NOT NULL,
+   dni INT(100) NOT NULL UNIQUE,
+   fecha_nacimiento DATE,
+   seguro_medico VARCHAR(100)
+
+);
+
+```
+
+2. `Email_pacientes`
+
+```sql
+CREATE TABLE email_pacientes(
+    emailID INT AUTO_INCREMENT PRIMARY KEY,
+    pacienteID INT NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    
+    FOREIGN KEY (pacienteID) references Pacientes(pacienteID)
+);
+```
+
+3. `telefono_pacientes`
+
+```sql
+CREATE TABLE telefono_pacientes(
+    telefonoID INT AUTO_INCREMENT PRIMARY KEY,
+    pacienteID INT NOT NULL,
+    telefono VARCHAR(100) NOT NULL,
+    
+    FOREIGN KEY (pacienteID) references Pacientes(pacienteID)
+);
+```
+
+4. `Departamentos`
+
+```sql
+CREATE TABLE Departamentos (
+   departamentoID INT AUTO_INCREMENT PRIMARY KEY,
+   nombre VARCHAR(100) NOT NULL,
+   presupuesto DECIMAL(15,2),
+   jefe_medicoID INT,
+   UNIQUE KEY (jefe_medicoID)
+
+);
+
+```
+5. `Especialidades`
+
+```sql
+CREATE TABLE Especialidades (
+   especialidadID INT AUTO_INCREMENT PRIMARY KEY,
+   nombre VARCHAR(100) NOT NULL,
+   descripcion VARCHAR(200)
+
+);
+
+```
+
+6. `Turnos`
+
+```sql
+CREATE TABLE Turnos (
+    turnoID INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE, 
+    hora_inicio TIME NOT NULL, 
+    hora_fin TIME NOT NULL
+);
+
+```
+
+
+7. `Medicos`
+
+```sql
+CREATE TABLE Medicos (
+    medicoID INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    dni VARCHAR(10) NOT NULL UNIQUE, 
+    email VARCHAR(100) UNIQUE, 
+  
+    departamentoID INT NOT NULL,
+    turnoID INT NOT NULL,
+    especialidadID INT NOT NULL,
+
+
+    FOREIGN KEY (departamentoID) REFERENCES Departamentos(departamentoID),
+    FOREIGN KEY (turnoID) REFERENCES Turnos(turnoID),
+    FOREIGN KEY (especialidadID) REFERENCES Especialidades(especialidadID) 
+);
+
+```
+
+8. `telefono_medicos`
+
+```sql
+CREATE TABLE telefono_medicos(
+    telefonoID INT AUTO_INCREMENT PRIMARY KEY,
+    medicoID INT NOT NULL,
+    telefono VARCHAR(100) NOT NULL,
+    
+    FOREIGN KEY (medicoID) references Medicos(medicoID)
+);
+```
+
+9. `Emfermeras`
+
+```sql
+CREATE TABLE Enfermeras(
+    enfermeraID INT AUTO_INCREMENT PRIMARY KEY,
+    departamentoID INT NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    dni VARCHAR(10) NOT NULL UNIQUE,
+    telefono VARCHAR(20),
+    turnoID INT NOT NULL,
+    
+    FOREIGN KEY (turnoID) REFERENCES Turnos(turnoID),
+    FOREIGN KEY (departamentoID) references Departamentos(departamentoID)
+);
+```
+
+10. `Proveedores`
+
+```sql
+CREATE TABLE Proveedores (
+    proveedorID INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(150) NOT NULL UNIQUE,
+    telefono VARCHAR(20),
+    direccion VARCHAR(255)
+);
+```
+
+11. `Inventario_Medicamentos`
+
+```sql
+CREATE TABLE Inventario_Medicamentos (
+    medicamentoID INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_comercial VARCHAR(150) NOT NULL UNIQUE,
+    cantidad_stock INT NOT NULL DEFAULT 0,
+    precio_unitario DECIMAL(10, 2) NOT NULL,
+    fecha_vencimiento DATE NOT NULL,
+    
+  
+    proveedorID INT NOT NULL,
+    departamentoID INT NOT NULL,
+
+
+    FOREIGN KEY (departamentoID) REFERENCES Departamentos(departamentoID),
+    FOREIGN KEY (proveedorID) REFERENCES Proveedores(proveedorID)
+);
+```
+12. `Recetas`
+```sql
+CREATE TABLE Recetas (
+    recetaID INT AUTO_INCREMENT PRIMARY KEY,
+    fecha_emision DATE NOT NULL,
+    medicoID INT NOT NULL,
+    pacienteID INT NOT NULL,
+    
+    FOREIGN KEY (medicoID) REFERENCES Medicos(medicoID),
+    FOREIGN KEY (pacienteID) REFERENCES Pacientes(pacienteID)
+);
+```
+
+13. `Detalle_receta`
+
+```sql
+CREATE TABLE Recetas_Detalle (
+    recetaID INT NOT NULL,
+    medicamentoID INT NOT NULL,
+    detalle INT NOT NULL, 
+    cantidad_prescrita INT NOT NULL,
+    instrucciones TEXT,
+    
+   
+    PRIMARY KEY (recetaID, detalle), 
+    
+    FOREIGN KEY (recetaID) REFERENCES Recetas(recetaID),
+    FOREIGN KEY (medicamentoID) REFERENCES Inventario_Medicamentos(medicamentoID)
+);
+```
+
+### Ejercicios
+
+1. Mostrar los pacientes cuya edad está entre 30 y 50 años
+
+ ```sql
+ SELECT 
+    pacienteID, 
+    nombre, 
+    apellido, 
+    fecha_nacimiento,
+    TIMESTAMPDIFF(YEAR, fecha_nacimiento, CURDATE()) AS edad_actual
+FROM Pacientes
+WHERE 
+    TIMESTAMPDIFF(YEAR, fecha_nacimiento, CURDATE()) BETWEEN 30 AND 50;
+ ```
+
+2. Mostrar las citas que aún no han sido concluidas
+3. Modificar una tabla para agregar una columna `email` a `Pacientes`
