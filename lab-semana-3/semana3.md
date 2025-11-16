@@ -585,9 +585,36 @@ CREATE TABLE Recetas_Detalle (
 );
 ```
 
+13. `Detalle_receta`
+
+```sql
+CREATE TABLE Citas (
+    citaID INT AUTO_INCREMENT PRIMARY KEY,
+    pacienteID INT NOT NULL,
+    medicoID INT NOT NULL,
+    enfermeraID INT, 
+    
+    fecha_cita DATE NOT NULL,
+    hora_cita TIME NOT NULL,
+    motivo TEXT NOT NULL, 
+    diagnostico TEXT,
+    
+    estado VARCHAR(50) NOT NULL DEFAULT 'Programada', 
+    
+    FOREIGN KEY (pacienteID) REFERENCES Pacientes(pacienteID),
+    FOREIGN KEY (medicoID) REFERENCES Medicos(medicoID),
+    FOREIGN KEY (enfermeraID) REFERENCES Enfermeras(enfermeraID)
+);
+```
+
+
+
+
 ### Ejercicios
 
 1. Mostrar los pacientes cuya edad está entre 30 y 50 años
+
+En este caso se usa una función para que tome la fecha de nacimiento hasta el dia de hoy y asi nos de la edad que corresponde.
 
  ```sql
  SELECT 
@@ -601,5 +628,26 @@ WHERE
     TIMESTAMPDIFF(YEAR, fecha_nacimiento, CURDATE()) BETWEEN 30 AND 50;
  ```
 
+ ![alt edades](img/50and30.png)
+
+
 2. Mostrar las citas que aún no han sido concluidas
+
+```sql
+SELECT *
+FROM Citas
+WHERE estado = 'Programada' OR estado = 'Pendiente';
+```
+
+ ![alt citas](img/citas.png)
+
 3. Modificar una tabla para agregar una columna `email` a `Pacientes`
+
+
+Inicialmente ya habia agregado ese valor en una tabla multivaluado.
+
+### Conclusion actividad #2 
+
+Basandonos en lo aprendido en el laboratorio uno se volvio a usar comandos similares pero esta vez se tenia en cuenta los nuevos requerimientos, y también aprendi a usar una función sql para calcular la edad de un usuario usando e valor de la columna `fecha_nacimiento` y tambien el concepto del tipo de dato `TIME`.
+
+Algunas dificultades que presente fue que en las tablas donde requeria dni al inicio cuando las cree no le habia agregado esta columna pero lo solucione gracias a que este mismo problema me habias sucedido en la actividad uno y lo habia documentado y solo use el comando.
