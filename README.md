@@ -51,6 +51,10 @@ por lo tanto y según los establecido en el modelo relacional, en una relación 
 SELECT * FROM ecommerce.productos;
 ```
 
+* Rules para los nombres de las tablas.
+
+Usar `snake_case`
+
 * normalize del valor  `DATE` para usar en lab ,  `año-mes-dia`. Por ejemplo, `2025-11-14`
 
 * como renombre el nombre de una columna usando `RENAME`.
@@ -102,6 +106,16 @@ SELECT column1, column2, ...
 FROM table_name
 WHERE condition1 AND condition2 AND condition3 ...;
 ```
+
+* Usando `ASC`
+
+```sql
+SELECT nombre, precio_unitario
+FROM medicamentos
+ORDER BY precio_unitario ASC; -- Ascendente, en squl si no agrega necesariamente  por defecto es ASC. DESC(descendente) 
+```
+
+
 
 
 
