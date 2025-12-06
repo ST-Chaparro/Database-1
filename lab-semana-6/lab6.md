@@ -21,7 +21,7 @@ En esta actividad se va realizar la creacion de la base de datos para un banco y
  
 ```sql
 
- id CREATE TABLE clients (
+ CREATE TABLE clients (
   client_id INT AUTO_INCREMENT PRIMARY KEY,
   dni VARCHAR(20) UNIQUE, -- Para evitar clientes repetidos
   firstname VARCHAR(100) NOT NULL,
@@ -127,6 +127,168 @@ CREATE TABLE user_bank (
   password_hash VARCHAR(255) NOT NULL,
   state_push BOOLEAN NOT NULL DEFAULT TRUE,
 
-  FOREIGN KEY (client_id) REFERENCES Clients(client_id),
+  FOREIGN KEY (client_id) REFERENCES Clients(client_id)
 
 );
+```
+
+### Consultas
+
+1. 
+
+```sql
+
+SELECT
+    ah.transaction_date AS Fecha_Operacion,
+    ah.amount AS Monto_Movimiento,
+    ah.type_movement AS Tipo_Movimiento,
+    ah.description_movement AS Descripcion,
+    ah.state_operation AS Estado_Operacion,
+    a.num_account AS Numero_Cuenta,
+    a.coin AS Moneda,
+    a.balance AS Balance_Actual_Cuenta -- El balance actual de la cuenta
+FROM
+    accounts_history ah
+JOIN
+    accounts a ON ah.num_account = a.num_account
+ORDER BY
+    ah.transaction_date DESC 
+LIMIT 5;
+
+```
+
+2. 
+
+```sql
+SELECT
+    C.firstname,
+    C.lastname,
+    CRD.num_card AS Numero_Tarjeta,
+    A.num_account AS Numero_Cuenta,
+    A.coin AS Moneda_Cuenta
+FROM
+    cards CRD
+JOIN
+    clients C ON CRD.client_id = C.client_id  -- Obtiene el nombre del cliente
+JOIN
+    card_account CA ON CRD.num_card = CA.num_card -- Vincula la tarjeta con la cuenta
+JOIN
+    accounts A ON CA.num_account = A.num_account -- Obtiene detalles de la cuenta (moneda)
+WHERE
+    CRD.num_card = '4567890123456781';
+
+```
+
+3. 
+
+```sql
+SELECT
+    A.num_account AS Numero_Cuenta,
+    A.coin AS Moneda,
+    A.type_account AS Tipo_Cuenta,
+    A.balance AS Balance_Actual,
+    ah.amount AS Monto_Operacion,
+    ah.state_operation AS Estado_Operacion,
+    ah.type_movement AS Tipo_Movimiento,
+    ah.transaction_date AS Fecha_Operacion
+FROM
+    accounts A
+JOIN
+    accounts_history ah ON A.num_account = ah.num_account
+WHERE
+    A.num_account = 'ES01' -- el número de cuenta 
+ORDER BY
+    ah.history_id DESC; 
+```
+4. 
+
+```sql
+SELECT
+    type_movement AS Tipo_Movimiento,
+    medium_transfer AS Medio_Transferencia,
+    description_movement AS Concepto,
+    state_operation AS Estado,
+    amount AS Monto
+FROM
+    accounts_history
+WHERE
+    num_account = 'ES01' 
+    AND amount BETWEEN 50.00 AND 500.00 -- rango 
+ORDER BY
+    transaction_date DESC;
+
+```
+5. 
+
+```sql
+SELECT
+    medium_transfer AS Medio_Transferencia,
+    description_movement AS Concepto,
+    state_operation AS Estado,
+    amount AS Monto
+FROM
+    accounts_history
+WHERE
+    num_account = 'ES01'
+    AND type_movement = 'Retiro' 
+ORDER BY
+    transaction_date DESC;
+
+```
+6. 
+
+```sql
+SELECT
+    num_account AS Numero_Cuenta,
+    medium_transfer AS Medio_Transferencia,
+    description_movement AS Concepto,
+    state_operation AS Estado,
+    amount AS Monto
+FROM
+    accounts_history
+WHERE
+    num_account = 'ES01'  
+    AND state_operation = 'Exitosa' 
+    AND amount > 100.00 
+ORDER BY
+    transaction_date DESC;
+
+```
+7. 
+
+```sql
+SELECT
+    UB.name_user AS Nombre_Usuario_Digital,
+    UB.state_push AS Estado_Notificaciones_Push,
+    C.firstname AS Nombres,
+    C.lastname AS Apellidos,
+    C.dni AS Numero_Identidad,
+    C.phone AS Telefono,
+    C.email AS Correo_Electronico
+FROM
+    user_bank UB
+JOIN
+    clients C ON UB.client_id = C.client_id
+WHERE
+    UB.client_id = 1;
+
+```
+8. 
+
+```sql
+SELECT
+    C.num_card AS Numero_Tarjeta,
+    C.expiration_date AS Fecha_Vencimiento,
+    C.retire_limmit AS Limite_Retiro,
+    A.num_account AS Numero_Cuenta_Enlazada,
+    A.coin AS Moneda_Cuenta
+FROM
+    cards C
+JOIN
+    card_account CA ON C.num_card = CA.num_card -- Conecta la tarjeta con las cuentas enlazadas
+JOIN
+    accounts A ON CA.num_account = A.num_account -- Obtiene los detalles (número y moneda) de las cuentas
+WHERE
+    C.num_card = '4567890123456781';
+
+```
