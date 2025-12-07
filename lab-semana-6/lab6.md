@@ -37,6 +37,8 @@ En esta actividad se va realizar la creacion de la base de datos para un banco y
 
 ```
 
+Agregar UNIQUE al dni y email para que no me permita insertar usuarios con el mismo dni.
+
 3. tabla `cuentas`
 
 
@@ -132,6 +134,72 @@ CREATE TABLE user_bank (
 );
 ```
 
+### Insersiones
+
+```sql
+-- Tabla clientes
+
+INSERT INTO clients (dni, firstname, lastname, sex, date_bird, country_resindece, city_residence, phone, email) VALUES
+('12345678A', 'Juan', 'Pérez García', 'M', '1985-05-20', 'España', 'Madrid', '600111222', 'juan.perez@example.com'),
+('98765432B', 'María', 'López Ruiz', 'F', '1992-11-10', 'México', 'CDMX', '5512345678', 'maria.lopez@email.mx'),
+('54321098C', 'Carlos', 'Jiménez Soto', 'M', '1978-01-25', 'Colombia', 'Bogotá', '3109876543', 'carlos.jimenez@col.com'),
+('11223344D', 'Ana', 'Torres Nieto', 'F', '2000-08-15', 'España', 'Barcelona', '677889900', 'ana.torres@bcn.es'),
+('44332211E', 'Pedro', 'Gómez Fdez', 'M', '1965-03-01', 'Chile', 'Santiago', '987654321', 'pedro.gomez@chile.cl');
+
+-- Tabla cuenta
+
+INSERT INTO accounts (num_account, client_id, balance, opening_date, coin, type_account) VALUES
+('ES01', 1, 150.50, '2024-01-15', 'Euro', 'Corriente'),
+('MX02', 2, 500.00, '2023-10-01', 'Dolar', 'Caja de ahorro'),
+('CO03', 3, 120.75, '2024-03-20', 'Dolar', 'Corriente'),
+('ES04', 4, 300.00, '2024-05-10', 'Euro', 'Caja de ahorro'),
+('CL05', 5, 800.00, '2023-08-22', 'Dolar', 'Corriente');
+
+-- Tabla tarjetas
+
+INSERT INTO cards (num_card, client_id, code_security, expiration_date, password_hash, retire_limmit) VALUES
+('4567890123456781', 1, '1111', '2028-10-31', 'hash_juan_p', 600.00),
+('4567890123456782', 2, '2222', '2027-05-15', 'hash_maria_l', 500.00),
+('4567890123456783', 3, '3333', '2029-01-20', 'hash_carlos_j', 400.00),
+('4567890123456784', 4, '4444', '2026-07-01', 'hash_ana_t', 750.00),
+('4567890123456785', 5, '5555', '2028-03-01', 'hash_pedro_g', 500.00);
+
+-- Tabla vinculacion tarjetas con cuenta principal
+
+INSERT INTO card_account (num_card, num_account, state_link) VALUES
+('4567890123456781', 'ES01', 'activo'),
+('4567890123456782', 'MX02', 'activo'),
+('4567890123456783', 'CO03', 'activo'),
+('4567890123456784', 'ES04', 'activo'),
+('4567890123456785', 'CL05', 'activo');
+
+-- Tabla usuario banca digital
+
+INSERT INTO user_bank (client_id, name_user, password_hash, state_push) VALUES
+(1, 'jperez85', 'hash_online_1', TRUE),
+(2, 'mlopez92', 'hash_online_2', TRUE),
+(3, 'cjimenez78', 'hash_online_3', FALSE),
+(4, 'atorres00', 'hash_online_4', TRUE),
+(5, 'pgomez65', 'hash_online_5', FALSE);
+
+
+-- Tabla historial transacciones
+
+INSERT INTO accounts_history (num_account, transaction_date, amount, type_movement, medium_transfer, description_movement, state_operation) VALUES
+('ES01', '2024-02-01 10:00:00', 500.00, 'Deposito', 'Banco', 'Nómina Feb', 'Exitosa'),
+('ES01', '2024-02-05 15:30:00', 50.00, 'Retiro', 'Cajero automatico', 'Retiro Efectivo', 'Exitosa'),
+('MX02', '2023-11-01 08:00:00', 100.00, 'Deposito', 'Online', 'Transferencia amigo', 'Exitosa'),
+('MX02', '2023-11-15 12:00:00', 20.00, 'Retiro', 'Online', 'Pago Spotify', 'Exitosa'),
+('CO03', '2024-04-01 00:00:00', 5.00, 'Retiro', 'Online', 'Comisión mantenimiento', 'Exitosa'),
+('CO03', '2024-04-02 09:00:00', 10.00, 'Deposito', 'Online', 'Venta pequeña', 'Exitosa'),
+('ES04', '2024-05-15 14:00:00', 150.00, 'Deposito', 'Banco', 'Ahorro mensual', 'Exitosa'),
+('ES04', '2024-06-01 16:00:00', 250.00, 'Retiro', 'Online', 'Transferencia', 'Exitosa'),
+('CL05', '2023-09-01 11:00:00', 30.00, 'Deposito', 'Banco', 'Ingreso Extra', 'Exitosa'),
+('CL05', '2023-09-10 13:00:00', 10.00, 'Retiro', 'Cajero automatico', 'Café', 'Exitosa');
+```
+
+
+
 ### Consultas
 
 1. 
@@ -139,23 +207,25 @@ CREATE TABLE user_bank (
 ```sql
 
 SELECT
-    ah.transaction_date AS Fecha_Operacion,
-    ah.amount AS Monto_Movimiento,
-    ah.type_movement AS Tipo_Movimiento,
-    ah.description_movement AS Descripcion,
-    ah.state_operation AS Estado_Operacion,
+    h.transaction_date AS Fecha_Operacion,
+    h.amount AS Monto_Movimiento,
+    h.type_movement AS Tipo_Movimiento,
+    h.description_movement AS Descripcion,
+    h.state_operation AS Estado_Operacion,
     a.num_account AS Numero_Cuenta,
     a.coin AS Moneda,
     a.balance AS Balance_Actual_Cuenta -- El balance actual de la cuenta
 FROM
-    accounts_history ah
+    accounts_history h
 JOIN
-    accounts a ON ah.num_account = a.num_account
+    accounts a ON h.num_account = a.num_account
 ORDER BY
-    ah.transaction_date DESC 
+    h.transaction_date DESC 
 LIMIT 5;
 
 ```
+
+![alt consulta](img/01.png)
 
 2. 
 
@@ -179,6 +249,8 @@ WHERE
 
 ```
 
+![alt consulta](img/02.png)
+
 3. 
 
 ```sql
@@ -200,6 +272,10 @@ WHERE
 ORDER BY
     ah.history_id DESC; 
 ```
+
+
+![alt text](img/03.png)
+
 4. 
 
 ```sql
@@ -218,6 +294,9 @@ ORDER BY
     transaction_date DESC;
 
 ```
+![alt text](img/04.png)
+
+
 5. 
 
 ```sql
@@ -235,6 +314,9 @@ ORDER BY
     transaction_date DESC;
 
 ```
+
+![alt text](img/05.png)
+
 6. 
 
 ```sql
@@ -254,11 +336,13 @@ ORDER BY
     transaction_date DESC;
 
 ```
+![alt text](img/06.png)
+
 7. 
 
 ```sql
 SELECT
-    UB.name_user AS Nombre_Usuario_Digital,
+    UB.name_user AS Nombre_Usuario_Digital, -- UB,usuario banco
     UB.state_push AS Estado_Notificaciones_Push,
     C.firstname AS Nombres,
     C.lastname AS Apellidos,
@@ -270,9 +354,13 @@ FROM
 JOIN
     clients C ON UB.client_id = C.client_id
 WHERE
-    UB.client_id = 1;
+    UB.client_id = 3;
 
 ```
+![alt text](img/07.png)
+
+En este caso el resultado de la notificacion es 1 ya que use el tipo BOOLEAN por lo que el número (1) es true, falso (0).
+
 8. 
 
 ```sql
@@ -292,3 +380,9 @@ WHERE
     C.num_card = '4567890123456781';
 
 ```
+![alt text](img/08.png)
+
+
+### Conclusion
+
+Despues de realizado la creación de base de datos y al realizar alguna pruebas de insercion de clientes pero en la creacion de la tabla clientes se me paso el modelo de que un cliente debe de ser unico y no se puede repetir la solucion que obtuve fue agregar que el dni y email fueran unicos para asi evitar registros duplicados, se logro correctamente las consultas con uso de JOIN y as para darle nombre al encabezado de la tabla que se muestra una vez se hace la consulta. 
